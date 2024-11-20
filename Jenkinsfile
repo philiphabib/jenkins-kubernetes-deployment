@@ -7,7 +7,8 @@ pipeline {
   stages {
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/philiphabib/jenkins-kubernetes-deployment.git'
+		checkout scmGit(branches: [[name: 'main']], 
+                                userRemoteConfigs: [[url: 'https://github.com/philiphabib/jenkins-kubernetes-deployment.git']])
       }
     }
     stage('Build image') {
