@@ -11,25 +11,23 @@ pipeline {
                                 userRemoteConfigs: [[url: 'https://github.com/philiphabib/jenkins-kubernetes-deployment.git']])
       }
     }
-    stage('Build image') {
-      steps{
-        script {
-          dockerImage = docker.build dockerimagename
+	stage('Build docker image'){
+        steps{
+            script{
+                sh 'docker build -t philiphabib/jenkins-kubernetes-deployment .'
+                }
+            }
         }
-      }
-    }
-    stage('Pushing Image') {
-      environment {
-          registryCredential = 'dockerhub-credentials'
-           }
-      steps{
-        script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
-          }
+    stage('Push image to Hub'){
+        steps{
+            script{
+                withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                sh 'docker login -u philiphabib -p ${dockerhubpwd}'
+                }
+                sh 'docker push philiphabib/jenkins-kubernetes-deployment'
+                }
+            }
         }
-      }
-    }
     stage('Deploying React.js container to Kubernetes') {
       steps {
         script {
