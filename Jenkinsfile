@@ -4,6 +4,7 @@ pipeline {
     registry = 'philiphabib/react-app"
     registryCredential = 'philiphabib'
   }
+  
   agent any
   stages {
     stage('Checkout Source') {
@@ -28,6 +29,7 @@ pipeline {
                     
                 }
             }
+			}
     stage('Deploying React.js container to Kubernetes') {
       steps {
         script {
