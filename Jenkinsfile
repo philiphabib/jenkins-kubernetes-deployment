@@ -7,7 +7,7 @@ pipeline {
   
   agent any
   stages {
-    stage('Checkout Source') {
+    stage('Checkout Source'){
       steps {
 		checkout scmGit(branches: [[name: 'main']], 
                                 userRemoteConfigs: [[url: 'https://github.com/philiphabib/jenkins-kubernetes-deployment.git']])
