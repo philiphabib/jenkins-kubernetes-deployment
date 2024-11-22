@@ -1,7 +1,8 @@
 pipeline {
   environment {
-    dockerimagename = "philiphabib/react-app"
-    dockerImage = ""
+    dockerImage = ''
+    registry = 'philiphabib/react-app"
+    registryCredential = 'philiphabib'
   }
   agent any
   stages {
@@ -14,20 +15,19 @@ pipeline {
 	stage('Build docker image'){
         steps{
             script{
-                sh 'docker build -t philiphabib/jenkins-kubernetes-deployment .'
+                dockerImage = docker.build registry
                 }
             }
         }
     stage('Push image to Hub'){
         steps{
-            script{
-                withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                sh 'docker login -u philiphabib -p ${dockerhubpwd}'
-                }
-                sh 'docker push philiphabib/jenkins-kubernetes-deployment'
+                script{
+                    docker.withRegistry('', registryCredential){
+                        dockerImage.push()
+                    }
+                    
                 }
             }
-        }
     stage('Deploying React.js container to Kubernetes') {
       steps {
         script {
