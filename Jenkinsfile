@@ -1,7 +1,7 @@
 pipeline {
   environment {
     dockerImage = ''
-    registry = 'philiphabib/react-app"
+    registry = 'philiphabib/react-app'
     registryCredential = 'philiphabib'
   }
   
