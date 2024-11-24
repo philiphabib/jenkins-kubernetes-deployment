@@ -4,7 +4,12 @@ pipeline {
     registry = 'philiphabib/react-app'
     registryCredential = 'philiphabib'
   }
-  
+
+  agent {
+    kubernetes {
+      yamlFile 'deployment.yaml, service.yaml'
+    }
+  }	
   agent any
   stages {
     stage('Checkout Source'){
@@ -32,9 +37,10 @@ pipeline {
 			}
     stage('Deploying React.js container to Kubernetes') {
       steps {
-        script {
-          kubernetesDeploy(configs: "deployment.yaml", 
-                                         "service.yaml")
+        container('kubectl') {
+          withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+            sh 'kubectl apply -f deployment.yaml',
+            sh 'kubectl apply -f service.yaml'		    
         }
       }
     }
